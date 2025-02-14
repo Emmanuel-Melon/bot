@@ -19,9 +19,10 @@ COPY . .
 # Build TypeScript code
 RUN npm run build
 
-# Expose the port your app runs on
-ENV PORT=3000
-EXPOSE $PORT
+# Set environment variables for the server
+ENV PORT=8080
+ENV HOST=0.0.0.0
+EXPOSE 8080
 
 # Start the application
 CMD ["npm", "start"]
