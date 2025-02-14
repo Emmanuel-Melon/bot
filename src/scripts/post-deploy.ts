@@ -25,6 +25,7 @@ async function main() {
     console.log('Test Output:');
     console.log(testOutput);
     console.log('User tests completed successfully');
+    console.log("DISCORD_PUBLIC_KEY:", process.env.DISCORD_PUBLIC_KEY);
 
     // Send success message to Discord
     await discordService.sendToGitHubChannel(`
