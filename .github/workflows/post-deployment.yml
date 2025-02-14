@@ -35,3 +35,4 @@ jobs:
           WORKFLOW_STATUS: success
           WORKFLOW_RUN_ID: ${{ github.run_id }}
           WORKFLOW_TRIGGER: ${{ github.event_name }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
