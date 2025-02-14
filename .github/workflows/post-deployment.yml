@@ -31,3 +31,7 @@ jobs:
         run: npm run post-deploy
         env:
           NODE_ENV: production
+          WORKFLOW_NAME: ${{ github.workflow }}
+          WORKFLOW_STATUS: success
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+          WORKFLOW_TRIGGER: ${{ github.event_name }}
