@@ -47,7 +47,7 @@ jobs:
           TEST_STEEL_SELENIUM_URL: ${{ secrets.TEST_STEEL_SELENIUM_URL }}
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: api-test-results
