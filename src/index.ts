@@ -16,7 +16,7 @@ server.register(notificationRoutes, { prefix: '/api' });
 
 const start = async () => {
   try {
-    await server.listen({ port: 3000 });
+    await server.listen({ port: 8080 });
   } catch (err) {
     server.log.error(err);
     process.exit(1);
