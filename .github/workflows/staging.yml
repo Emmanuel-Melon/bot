@@ -1,0 +1,35 @@
+name: Test Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Run Tests
+        id: test-run
+        run: |
+          npm test || echo "::set-output name=failed::true"
+          
+      - name: Check Test Status
+        if: steps.test-run.outputs.failed == 'true'
+        run: |
+          echo "Tests failed!"
+          exit 1
