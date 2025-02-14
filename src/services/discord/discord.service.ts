@@ -77,9 +77,30 @@ import {
       }
     }
 
+    async findChannel() {
+      try {
+        console.log('Looking for GitHub channel...');
+        console.log('Channel ID:', CHANNELS.GITHUB);
+        
+        const channel = await discord.channels.fetch(CHANNELS.GITHUB);
+        console.log('Found channel:', {
+          id: channel?.id,
+          name: channel?.toString(),
+          type: channel?.type,
+          available: !!channel
+        });
+        
+        return channel;
+      } catch (error) {
+        console.error('Error finding GitHub channel:', error);
+        throw error;
+      }
+    }
+
     async sendToGitHubChannel(message: string) {
       try {
         const channel = await discord.channels.fetch(CHANNELS.GITHUB) as TextChannel;
+        console.log("Channel:", channel);
         if (!channel) {
           throw new Error('GitHub channel not found');
         }

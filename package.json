@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/src/index.js",
     "test": "tap --ts --no-coverage test/**/*.test.ts",
-    "post-deploy": "ts-node src/scripts/post-deploy.ts"
+    "post-deploy": "ts-node src/scripts/post-deploy.ts",
+    "check-channels": "ts-node src/scripts/check-channels.ts"
   },
   "keywords": [],
   "author": "",
