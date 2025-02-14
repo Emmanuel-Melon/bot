@@ -39,7 +39,7 @@ jobs:
           # Discord Configuration
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           APP_ID: ${{ secrets.DISCORD_APP_ID }}
-          DISCORD_PUBLIC_KEY: ${{ secrets.DISCORD_DISCORD_PUBLIC_KEY }}
+          DISCORD_PUBLIC_KEY: ${{ secrets.DISCORD_PUBLIC_KEY }}
           DISCORD_SERVER_ID: ${{ secrets.DISCORD_SERVER_ID }}
           # Channel IDs
           DISCORD_GITHUB_CHANNEL_ID: ${{ secrets.DISCORD_GITHUB_CHANNEL_ID }}
