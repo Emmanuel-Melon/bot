@@ -1,4 +1,4 @@
-name: Post-Deployment Testing
+name: Post-Deployment Check
 
 on:
   push:
@@ -6,23 +6,9 @@ on:
       - main
 
 jobs:
-  wait-for-deployment:
-    name: Wait for Staging Deployment
+  post-deploy:
+    name: Run Post-Deployment Check
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Wait for Fly.io deployment
-        run: |
-          echo "Waiting for Fly.io deployment to complete..."
-          sleep 300 # Wait 5 minutes for deployment to stabilize
-          echo "Deployment should be complete. Proceeding to tests."
-
-  run-tests:
-    name: Run API Tests
-    runs-on: ubuntu-latest
-    needs: wait-for-deployment
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,38 +20,14 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Run API tests
-        id: api-test-run
-        run: npm run test:api
-        continue-on-error: true
-        env:
-          TEST_STEEL_API_KEY: ${{ secrets.TEST_STEEL_API_KEY }}
-          TEST_STEEL_API_URL: ${{ secrets.TEST_STEEL_API_URL }}
-          TEST_STEEL_WS_URL: ${{ secrets.TEST_STEEL_WS_URL }}
-          TEST_STEEL_SELENIUM_URL: ${{ secrets.TEST_STEEL_SELENIUM_URL }}
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: api-test-results
-          path: junit.xml
-
-      - name: Notify Server on Failure
-        if: failure()
+      - name: Wait for deployment
         run: |
-          curl -X POST \
-          -H "Content-Type: application/json" \
-          -H "X-Signature: ${{ secrets.API_SIGNATURE }}" \
-          -d '{
-            "status": "failed",
-            "run_id": "${{ github.run_id }}",
-            "repo": "${{ github.repository }}",
-            "commit": "${{ github.sha }}",
-            "actor": "${{ github.actor }}",
-            "details_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-            "test_results": "${{ steps.api-test-run.outcome }}"
-          }' \
-          "${{ secrets.NOTIFICATION_WEBHOOK_URL }}"
+          echo "Waiting for deployment to stabilize..."
+          sleep 300  # Wait 5 minutes
+
+      - name: Run post-deployment check
+        run: npm run post-deploy
+        env:
+          NODE_ENV: production
