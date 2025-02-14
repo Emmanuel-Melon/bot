@@ -1,4 +1,6 @@
 import { execSync } from 'child_process';
+import { logParser } from './log-parser';
+import path from 'path';
 
 console.log('Post-deployment script executed successfully at:', new Date().toISOString());
 console.log('Environment:', process.env.NODE_ENV || 'development');
@@ -18,10 +20,10 @@ try {
   console.log(testOutput);
   console.log('User tests completed successfully');
 } catch (error) {
-  console.error('User tests failed:');
   if (error instanceof Error) {
-    console.error(error.message);
-    // Exit with error code if tests fail
+    // Format and display the error report directly in the action log
+    const formattedReport = logParser.formatErrorReport(error.message);
+    console.error(formattedReport);
     process.exit(1);
   }
 }
