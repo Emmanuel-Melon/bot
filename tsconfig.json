@@ -11,9 +11,9 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules/*", "src/*"]
     }
   },
-  "include": ["./**/*.ts"],
+  "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules"]
 }
