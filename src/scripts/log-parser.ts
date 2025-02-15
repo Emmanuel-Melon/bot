@@ -7,6 +7,21 @@ interface ErrorLog {
   nodeVersion: string;
 }
 
+interface WorkflowInfo {
+  name: string;
+  status: string;
+  runId: string;
+  trigger: string;
+  deploymentUrl: string;
+}
+
+interface DeploymentStatus {
+  isSuccess: boolean;
+  healthCheckStatus: string;
+  testOutput?: string;
+  workflowInfo: WorkflowInfo;
+}
+
 class LogParser {
   private parseErrorLog(log: string): ErrorLog {
     const lines = log.split('\n').filter(line => line.trim());
@@ -31,7 +46,7 @@ class LogParser {
         continue;
       }
 
-      if (isStackTrace && line.includes('at ')) {
+      if (isStackTrace && line.trim()) {
         errorLog.stack.push(line.trim());
       }
     }
@@ -76,6 +91,38 @@ ${recommendations.length > 0
   ? recommendations.join('\n')
   : "No specific recommendations available for this error."}
 `;
+  }
+
+  public formatDeploymentMessage(status: DeploymentStatus): string {
+    const { isSuccess, healthCheckStatus, testOutput, workflowInfo } = status;
+    const statusEmoji = isSuccess ? '🚀' : '❌';
+    const statusTitle = isSuccess ? 'Deployment Successful!' : 'Deployment Failed';
+
+    return `${statusEmoji} ${statusTitle}
+━━━━━━━━━━━━━━━━━━━━━━━
+🏥 Health Check: ${healthCheckStatus}
+📅 Time: ${new Date().toISOString()}
+🔄 Workflow: ${workflowInfo.name}
+🎯 Trigger: ${workflowInfo.trigger}
+🆔 Run ID: ${workflowInfo.runId}
+🌐 URL: ${workflowInfo.deploymentUrl}
+
+${!isSuccess ? '❌ Deployment failed. Please check the GitHub Actions logs for more details.' : ''}
+${testOutput ? `\n📋 Test Output:\n\`\`\`\n${testOutput}\`\`\`` : ''}`;
+  }
+
+  public formatErrorMessage(error: Error, workflowInfo: WorkflowInfo): string {
+    const formattedReport = this.formatErrorReport(error.message);
+    
+    return `❌ Error in Post-Deployment Check
+━━━━━━━━━━━━━━━━━━━━
+⚠️ Error Details:
+\`\`\`
+${formattedReport}
+\`\`\`
+📅 Time: ${new Date().toISOString()}
+🔄 Workflow: ${workflowInfo.name}
+🆔 Run ID: ${workflowInfo.runId}`;
   }
 }
 

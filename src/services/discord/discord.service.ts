@@ -6,11 +6,10 @@ import {
     PartialMessageReaction,
     PartialUser,
     MessageReactionEventDetails,
-    GuildChannel,
     TextChannel,
   } from "discord.js";
   import { discord } from "../../lib/discord";
-  import { CHANNELS, DISCORD_CONFIG } from "./constants";
+  import { DISCORD_CONFIG } from "./constants";
   
   export class DiscordService {
     constructor() {
@@ -80,9 +79,9 @@ import {
     async findChannel() {
       try {
         console.log('Looking for GitHub channel...');
-        console.log('Channel ID:', CHANNELS.GITHUB);
+        console.log('Channel ID:', DISCORD_CONFIG.GITHUB_CHANNEL_ID);
         
-        const channel = await discord.channels.fetch(CHANNELS.GITHUB);
+        const channel = await discord.channels.fetch(DISCORD_CONFIG.GITHUB_CHANNEL_ID);
         console.log('Found channel:', {
           id: channel?.id,
           name: channel?.toString(),
@@ -99,13 +98,30 @@ import {
 
     async sendToGitHubChannel(message: string) {
       try {
-        console.log("github channel id", CHANNELS.GITHUB);
-             
-        const channel = await discord.channels.fetch(CHANNELS.GITHUB) as TextChannel;
-      
-        if (!channel) {
-          throw new Error('GitHub channel not found');
+
+        if (!discord.isReady()) {
+          await new Promise(resolve => {
+            const checkReady = () => {
+              if (discord.isReady()) {
+                resolve(true);
+              } else {
+                setTimeout(checkReady, 100);
+              }
+            };
+            checkReady();
+          });
         }
+
+        const guild = await discord.guilds.fetch(DISCORD_CONFIG.SERVER_ID);
+        if (!guild) {
+          throw new Error(`Could not find guild with ID ${DISCORD_CONFIG.SERVER_ID}`);
+        }
+
+        const channel = await guild.channels.fetch(DISCORD_CONFIG.GITHUB_CHANNEL_ID);
+        if (!channel || !('send' in channel)) {
+          throw new Error(`GitHub channel not found or is not a text channel. ID: ${DISCORD_CONFIG.GITHUB_CHANNEL_ID}`);
+        }
+
         return await channel.send(message);
       } catch (error) {
         console.error('Failed to send message to GitHub channel:', error);

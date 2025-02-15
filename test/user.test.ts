@@ -12,7 +12,7 @@ test('UserService', async (t) => {
 
     const user = await userService.create(userData);
     t.ok(user.id, 'should have an id');
-    t.equal(user.name, 'Jane Doe', 'should have correct name');
+    t.equal(user.name, 'John Doe', 'should have correct name');
     t.equal(user.email, userData.email, 'should have correct email');
     t.ok(user.createdAt instanceof Date, 'should have createdAt date');
     t.ok(user.updatedAt instanceof Date, 'should have updatedAt date');

@@ -27,12 +27,21 @@ export const createDiscordClient = () => {
     ],
   });
 
-  discord.on("ready", () => {
-    console.info("Discord bot is ready!");
+  discord.on("ready", async () => {
     console.log('Connected as:', discord.user?.tag);
+    
+    try {
+      const guild = await discord.guilds.fetch(DISCORD_CONFIG.SERVER_ID);
+      console.log('✓ Connected to guild:', guild.name);
+      
+      const channels = await guild.channels.fetch();
+      console.log('✓ Fetched', channels.size, 'channels');
+    } catch (error) {
+      console.error('Error during initialization:', error);
+      process.exit(1);
+    }
   });
 
-  // Login with the token
   console.log('Attempting to login to Discord...');
   discord.login(DISCORD_CONFIG.TOKEN).catch(error => {
     console.error('Failed to login to Discord:', error);

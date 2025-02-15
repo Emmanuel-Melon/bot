@@ -27,14 +27,21 @@ jobs:
           echo "Waiting for deployment to stabilize..."
           sleep 300  # Wait 5 minutes
 
+      - name: Run deployment tests
+        id: deployment-test
+        run: |
+          npm test -- test/deployment.test.ts || echo "::set-output name=status::failed"
+
       - name: Run post-deployment check
+        if: always()
         run: npm run post-deploy
         env:
           NODE_ENV: production
           WORKFLOW_NAME: ${{ github.workflow }}
-          WORKFLOW_STATUS: success
+          WORKFLOW_STATUS: ${{ steps.deployment-test.outcome }}
           WORKFLOW_RUN_ID: ${{ github.run_id }}
           WORKFLOW_TRIGGER: ${{ github.event_name }}
+          DEPLOYMENT_URL: ${{ secrets.DEPLOYMENT_URL }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           # Discord Configuration
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
