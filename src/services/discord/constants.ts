@@ -1,3 +1,19 @@
+import dotenv from 'dotenv';
+import path from 'path';
+
+console.log("Process", process.env.DISCORD_GITHUB_CHANNEL_ID);
+
+// Load .env file only in local development
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({
+    path: path.resolve(
+      process.cwd(),
+      process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+    ),
+    override: true
+  });
+}
+
 // Validate required environment variables
 function validateEnvVar(name: string, value: string | undefined): string {
   if (!value) {

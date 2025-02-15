@@ -10,7 +10,7 @@ import {
     TextChannel,
   } from "discord.js";
   import { discord } from "../../lib/discord";
-  import { CHANNELS } from "./constants";
+  import { CHANNELS, DISCORD_CONFIG } from "./constants";
   
   export class DiscordService {
     constructor() {
@@ -100,8 +100,9 @@ import {
     async sendToGitHubChannel(message: string) {
       try {
         console.log("github channel id", CHANNELS.GITHUB);
+             
         const channel = await discord.channels.fetch(CHANNELS.GITHUB) as TextChannel;
-        console.log("Channel:", channel);
+      
         if (!channel) {
           throw new Error('GitHub channel not found');
         }
