@@ -8,13 +8,17 @@ function validateEnvVar(name: string, value: string | undefined): string {
 }
 
 export const CHANNELS = {
-  FEEDBACK: validateEnvVar('FEEDBACK_CHANNEL_ID', process.env.FEEDBACK_CHANNEL_ID),
+  FEEDBACK: process.env.FEEDBACK_CHANNEL_ID || null,
   GITHUB: validateEnvVar('DISCORD_GITHUB_CHANNEL_ID', process.env.DISCORD_GITHUB_CHANNEL_ID),
 } as const;
 
 console.log('\nChannel Configuration:');
 console.log('✓ GitHub Channel ID:', CHANNELS.GITHUB);
-console.log('✓ Feedback Channel ID:', CHANNELS.FEEDBACK);
+if (CHANNELS.FEEDBACK) {
+  console.log('✓ Feedback Channel ID:', CHANNELS.FEEDBACK);
+} else {
+  console.log('ℹ Feedback Channel ID: Not configured (optional)');
+}
 
 export const DISCORD_CONFIG = {
   APP_ID: validateEnvVar('APP_ID', process.env.APP_ID),

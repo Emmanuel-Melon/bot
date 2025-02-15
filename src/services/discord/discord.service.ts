@@ -99,6 +99,7 @@ import {
 
     async sendToGitHubChannel(message: string) {
       try {
+        console.log("github channel id", CHANNELS.GITHUB);
         const channel = await discord.channels.fetch(CHANNELS.GITHUB) as TextChannel;
         console.log("Channel:", channel);
         if (!channel) {

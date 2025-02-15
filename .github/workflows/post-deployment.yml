@@ -43,4 +43,5 @@ jobs:
           DISCORD_SERVER_ID: ${{ secrets.DISCORD_SERVER_ID }}
           # Channel IDs
           DISCORD_GITHUB_CHANNEL_ID: ${{ secrets.DISCORD_GITHUB_CHANNEL_ID }}
+          # Optional: Configure this if you want to enable feedback functionality
           FEEDBACK_CHANNEL_ID: ${{ secrets.FEEDBACK_CHANNEL_ID }}
